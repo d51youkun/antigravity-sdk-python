@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1a73e8">
+  <meta name="description" content="Google Antigravity SDK — Gemini 搭載 AI エージェントを Python で構築するための SDK">
+  <title>Google Antigravity SDK</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --text: #202124;
+      --text-secondary: #5f6368;
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --accent: #34a853;
+      --warning-bg: #fef7e0;
+      --warning-border: #f9ab00;
+      --code-bg: #f1f3f4;
+      --code-text: #174ea6;
+      --border: #dadce0;
+      --shadow: 0 1px 3px rgba(60, 64, 67, 0.15), 0 4px 8px rgba(60, 64, 67, 0.08);
+      --radius: 16px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --header-h: 56px;
+      --nav-h: 64px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(var(--header-h) + 12px);
+    }
+
+    body {
+      font-family: "Google Sans", "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 16px);
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #4285f4, #34a853, #fbbc04, #ea4335);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .header-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 20px;
+      background: rgba(26, 115, 232, 0.08);
+    }
+
+    .hero {
+      padding: 24px 16px 8px;
+    }
+
+    .hero h1 {
+      font-size: 28px;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+
+    .section {
+      padding: 8px 16px 16px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(218, 220, 224, 0.6);
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      margin: 16px 0 8px;
+    }
+
+    .card p,
+    .card li {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .card ul {
+      padding-left: 18px;
+      margin-top: 8px;
+    }
+
+    .card li + li {
+      margin-top: 6px;
+    }
+
+    .alert {
+      background: var(--warning-bg);
+      border-left: 4px solid var(--warning-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #3c4043;
+      margin: 12px 0;
+    }
+
+    .code-block {
+      position: relative;
+      background: #202124;
+      color: #e8eaed;
+      border-radius: 12px;
+      padding: 14px 14px 14px 16px;
+      margin: 12px 0;
+      overflow-x: auto;
+      font-family: "Roboto Mono", "SF Mono", Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre;
+    }
+
+    .code-block .lang {
+      position: absolute;
+      top: 8px;
+      right: 40px;
+      font-size: 10px;
+      color: #9aa0a6;
+      text-transform: uppercase;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      border: none;
+      color: #bdc1c6;
+      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .copy-btn.copied {
+      color: var(--accent);
+    }
+
+    .feature-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .feature-chip {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px;
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(26, 115, 232, 0.1);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .feature-chip strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .feature-chip span {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .arch-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .arch-table th,
+    .arch-table td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .arch-table th {
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .arch-table td:first-child {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: calc(var(--nav-h) + var(--safe-bottom));
+      padding-bottom: var(--safe-bottom);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 500;
+      padding: 6px 10px;
+      min-width: 56px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-item span:first-child {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px 16px 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .footer a {
+      color: var(--primary);
+    }
+
+    @media (min-width: 480px) {
+      .hero-actions {
+        flex-direction: row;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">A</div>
+      <span>Antigravity SDK</span>
+    </div>
+    <a class="header-link" href="https://pypi.org/project/google-antigravity/" target="_blank" rel="noopener">PyPI</a>
+  </header>
+
+  <section class="hero" id="top">
+    <h1>AI エージェントを<br>Python で構築</h1>
+    <p>Google Antigravity SDK は、Antigravity と Gemini を使った AI エージェント開発用 Python SDK です。エージェントの実行基盤を抽象化し、<em>何をするか</em>に集中できます。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#install">インストール</a>
+      <a class="btn btn-secondary" href="https://github.com/d51youkun/antigravity-sdk-python" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </section>
+
+  <section class="section" id="install">
+    <div class="section-title">はじめに</div>
+    <div class="card">
+      <h2>インストール</h2>
+      <div class="code-block" data-copy><span class="lang">sh</span>pip install google-antigravity<button class="copy-btn" aria-label="コピー">⎘</button></div>
+      <div class="alert">
+        <strong>重要:</strong> この SDK は PyPI 配布の wheel に含まれるコンパイル済みバイナリが必要です。リポジトリのクローンだけでは動作しません。必ず <code>pip install google-antigravity</code> でインストールしてください。
+      </div>
+    </div>
+
+    <div class="card" id="quickstart">
+      <h2>クイックスタート</h2>
+      <p>API キーを設定して hello_world 例を実行:</p>
+      <div class="code-block" data-copy><span class="lang">sh</span>export GEMINI_API_KEY="your_api_key_here"
+python ./examples/getting_started/hello_world.py<button class="copy-btn" aria-label="コピー">⎘</button></div>
+    </div>
+  </section>
+
+  <section class="section" id="concepts">
+    <div class="section-title">基本概念</div>
+    <div class="card">
+      <h2>Simple Agent</h2>
+      <p><code>Agent</code> クラスが最も簡単な入り口です。バイナリ検出、ツール配線、フック登録、ポリシーをまとめて管理します。</p>
+      <div class="code-block" data-copy><span class="lang">python</span>import asyncio
+from google.antigravity import Agent, LocalAgentConfig
+
+async def main():
+    config = LocalAgentConfig(
+        system_instructions="You are an expert assistant.",
+    )
+    async with Agent(config) as agent:
+        response = await agent.chat("What files are in the current directory?")
+        print(await response.text())
+
+asyncio.run(main())<button class="copy-btn" aria-label="コピー">⎘</button></div>
+    </div>
+
+    <div class="card">
+      <h2>ストリーミング</h2>
+      <p><code>async for</code> でリアルタイムにトークンを受け取れます。</p>
+      <div class="code-block" data-copy><span class="lang">python</span>response = await agent.chat("Write a short poem.")
+async for token in response:
+    print(token, end="", flush=True)<button class="copy-btn" aria-label="コピー">⎘</button></div>
+    </div>
+
+    <div class="card">
+      <h2>Vertex AI / Gemini Enterprise</h2>
+      <div class="code-block" data-copy><span class="lang">python</span>config = LocalAgentConfig(
+    vertex=True,
+    project="your-gcp-project",
+    location="us-central1",
+)
+async with Agent(config) as agent:
+    response = await agent.chat("Hello!")
+    print(await response.text())<button class="copy-btn" aria-label="コピー">⎘</button></div>
+      <p style="margin-top:8px">事前に <code>gcloud auth application-default login</code> で認証してください。</p>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="section-title">主な機能</div>
+    <div class="feature-grid">
+      <div class="feature-chip">
+        <div class="feature-icon">🖼</div>
+        <div><strong>マルチモーダル</strong><span>画像・動画・音声・PDF をエージェントに渡せます</span></div>
+      </div>
+      <div class="feature-chip">
+        <div class="feature-icon">🔧</div>
+        <div><strong>カスタムツール</strong><span>Python 関数をツールとして登録</span></div>
+      </div>
+      <div class="feature-chip">
+        <div class="feature-icon">🔌</div>
+        <div><strong>MCP 連携</strong><span>外部 MCP サーバーのツールを利用</span></div>
+      </div>
+      <div class="feature-chip">
+        <div class="feature-icon">🛡</div>
+        <div><strong>フック &amp; ポリシー</strong><span>ツール実行を宣言的に制御</span></div>
+      </div>
+      <div class="feature-chip">
+        <div class="feature-icon">⏱</div>
+        <div><strong>トリガー</strong><span>定期実行や外部イベントでエージェント起動</span></div>
+      </div>
+      <div class="feature-chip">
+        <div class="feature-icon">💬</div>
+        <div><strong>Conversation</strong><span>履歴付きセッションの低レベル制御</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="architecture">
+    <div class="section-title">アーキテクチャ</div>
+    <div class="card">
+      <table class="arch-table">
+        <thead>
+          <tr><th>レイヤー</th><th>目的</th><th>主要クラス</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Layer 1</td>
+            <td>高レベル API</td>
+            <td><code>Agent</code></td>
+          </tr>
+          <tr>
+            <td>Layer 2</td>
+            <td>ステートフルセッション</td>
+            <td><code>Conversation</code>, <code>ChatResponse</code></td>
+          </tr>
+          <tr>
+            <td>Layer 3</td>
+            <td>トランスポート抽象化</td>
+            <td><code>Connection</code>, <code>LocalConnection</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="examples">
+    <div class="section-title">サンプル</div>
+    <div class="card">
+      <h2>examples/ ディレクトリ</h2>
+      <ul>
+        <li><strong>getting_started/</strong> — 1 ファイル 1 機能の入門例</li>
+        <li><strong>deep_dives/</strong> — 複数機能を組み合わせた実践例</li>
+      </ul>
+      <p style="margin-top:12px">CLI、マルチエージェント、ドキュメント自動更新などのデモが含まれます。</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Apache License 2.0</p>
+    <p style="margin-top:6px"><a href="https://github.com/d51youkun/antigravity-sdk-python">GitHub リポジトリ</a></p>
+  </footer>
+
+  <nav class="bottom-nav" aria-label="メインナビゲーション">
+    <a class="nav-item active" href="#top"><span>🏠</span><span>ホーム</span></a>
+    <a class="nav-item" href="#install"><span>📦</span><span>導入</span></a>
+    <a class="nav-item" href="#features"><span>✨</span><span>機能</span></a>
+    <a class="nav-item" href="#examples"><span>📚</span><span>例</span></a>
+  </nav>
+
+  <script>
+    document.querySelectorAll(".copy-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const block = btn.closest(".code-block");
+        const text = block.textContent.replace("⎘", "").trim();
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.classList.add("copied");
+          btn.textContent = "✓";
+          setTimeout(() => {
+            btn.classList.remove("copied");
+            btn.textContent = "⎘";
+          }, 1500);
+        } catch {
+          btn.textContent = "!";
+        }
+      });
+    });
+
+    const sections = ["top", "install", "features", "examples"];
+    const navItems = document.querySelectorAll(".nav-item");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            navItems.forEach((item) => {
+              item.classList.toggle("active", item.getAttribute("href") === "#" + id);
+            });
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -45% 0px", threshold: 0 }
+    );
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+  </script>
+</body>
+</html>
