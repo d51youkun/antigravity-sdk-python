@@ -1,0 +1,16 @@
+{
+  "name": "ipa-signer-web",
+  "private": true,
+  "scripts": {
+    "build:frontend": "npm --prefix frontend ci && npm --prefix frontend run build",
+    "deploy": "npm run build:frontend && wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "@cloudflare/containers": "^0.3.7",
+    "@cloudflare/workers-types": "^5.20260722.1",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.115.0"
+  }
+}

@@ -1,8 +1,9 @@
 node_modules/
 dist/
+.wrangler/
+.dev.vars
 __pycache__/
 *.pyc
 .env
 .venv/
 *.egg-info/
-node_modules/

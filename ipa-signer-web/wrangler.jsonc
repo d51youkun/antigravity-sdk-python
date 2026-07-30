@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ipa-signer",
+  "main": "worker/src/index.ts",
+  "compatibility_date": "2024-09-23",
+  "observability": { "enabled": true },
+
+  "assets": {
+    "directory": "./frontend/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+
+  "containers": [
+    {
+      "class_name": "IpaSignerApi",
+      "image": "./backend/Dockerfile",
+      "max_instances": 2,
+      "instance_type": "basic"
+    }
+  ],
+
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "API",
+        "class_name": "IpaSignerApi"
+      }
+    ]
+  },
+
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["IpaSignerApi"]
+    }
+  ]
+}
