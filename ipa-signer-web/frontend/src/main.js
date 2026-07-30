@@ -1,6 +1,9 @@
 import "./style.css";
 import JSZip from "jszip";
 
+/** 同一オリジン (/api) または VITE_API_BASE を使用 */
+const API_BASE = (import.meta.env.VITE_API_BASE || "").replace(/\/$/, "");
+
 const state = {
   sessionId: null,
   teams: [],
@@ -16,7 +19,7 @@ app.innerHTML = `
     <h1>IPA Signer Web</h1>
     <p>
       Apple IDでログインし、無料開発者証明書を取得してIPAを署名します。
-      署名処理はブラウザ内で実行され、IPAファイルは署名サーバーにアップロードされません。
+      iPad / iPhone の Safari からそのまま使えます。IPA の署名は端末内で完結します。
     </p>
   </header>
 
@@ -60,7 +63,10 @@ app.innerHTML = `
 
     <section class="card hidden" id="sign-card">
       <h2>IPA とデバイス</h2>
-      <p class="hint">インストール先iPhoneのUDIDを登録し、署名するIPAを選択します。</p>
+      <p class="hint">
+        インストール先 iPhone / iPad の UDID を登録し、署名する IPA を選択します。
+        iPad から操作する場合、UDID は別デバイスで確認して入力してください。
+      </p>
 
       <div class="field">
         <label for="team-id">開発チーム</label>
@@ -141,7 +147,7 @@ function hideStatus(...elements) {
 }
 
 async function api(path, body) {
-  const response = await fetch(path, {
+  const response = await fetch(`${API_BASE}${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

@@ -1,0 +1,20 @@
+# Fly.io — Python API（Anisette + Apple 認証）
+# デプロイ: cd ipa-signer-web && fly launch / fly deploy
+app = "ipa-signer-api"
+primary_region = "nrt"
+
+[build]
+  dockerfile = "Dockerfile"
+  context = "backend"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

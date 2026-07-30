@@ -1,0 +1,6 @@
+name = "ipa-signer-web"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "frontend/dist"
+
+# Cloudflare Pages ダッシュボードまたは wrangler で設定:
+#   BACKEND_URL = https://your-api.fly.dev  (Python API の URL)
